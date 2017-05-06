@@ -3,7 +3,7 @@
 This is our project , a smart car in lego with arduino.
 
 
-![Banner](http://3.bp.blogspot.com/_h3f_qVKOPlU/TTuBiwbCdYI/AAAAAAAAAIg/fjdd1G8Heuk/s1600/Photo0044_002.jpg)
+![Banner](https://cdn.pixabay.com/photo/2015/11/19/09/08/arduino-1050655_960_720.jpg)
 
 ## Deployment
 Prerequisites: **Arduino software**
