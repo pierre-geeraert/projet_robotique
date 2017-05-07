@@ -6,27 +6,32 @@ int pinBouton = 7; //pin du bouton
 Servo leServo; // on définit un objet Servo nommé leServo
 
 void setup() {
-
+  Serial.begin(9600);//utilisé pour l'affichage sur une console
   leServo.attach(pinServo); // on relie l'objet au pin de commande
   pinMode(pinBouton, INPUT_PULLUP);
 }
+
+void MVT_angle(int angle){
+      leServo.write(angle); // on dit à l'objet de mettre le servo à 150°
+      delay(1000); // ce délai est nécessaire pour que le servo atteigne sa position
+}
+
 
 
 void loop() {
   boolean etatBouton = digitalRead(pinBouton);
   Serial.println(etatBouton);
-  if (etatBouton == 0)//appui sur le bouton
-  {
-  leServo.write(150); // on dit à l'objet de mettre le servo à 150°
-
-  delay(1000); // ce délai est nécessaire pour que le servo atteigne sa position
-  }
-  if (etatBouton == 1)//pas d'appui
-  {
-    leServo.write(90); // on dit à l'objet de mettre le servo à 90°
-
-  delay(1000); // ce délai est nécessaire pour que le servo atteigne sa position
-  }
+  switch(etatBouton){
+    
+       case 0://appui sur le bouton
+            MVT_angle(150);
+       break;
+       
+       default://appui sur le bouton
+            MVT_angle(90);
+       
+    }
+  
   
   
   
