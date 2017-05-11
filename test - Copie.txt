@@ -1,0 +1,103 @@
+#include <Servo.h> //on importe la bibliothèque Servo
+
+int pinServo=13; // variable pour stocker le pin pour la commande
+int pinMoteur=7; //variable pour le numéro du pin utilisé
+Servo leServo; // on définit un objet Servo nommé leServo
+
+int pinLed=12; //variable pour le numéro du pin utilisé
+
+
+int pinSRF = 8; //pin digital pour l'envoi et la réception des signaux
+int vSon=59; //valeur de temps en µs d'un aller retour du son sur 1cm
+
+void setup() {
+
+  Serial.begin(9600); //on initialise la communication série
+  leServo.attach(pinServo); // on relie l'objet au pin de commande
+  pinMode(pinMoteur,OUTPUT); //le pin 13 en mode sortie de courant
+}
+
+//boucle principale
+
+void loop() {
+
+  int distance=mesureDistance(); //on récupère la valeur de distance grâce à la fonction créee plus bas
+
+  Serial.println(distance); // on affiche la distance en cm
+
+  if ( distance>0 && distance<20 )
+  {
+    leServo.write(179); // position à 179, 180 est à éviter car cela forcerait le servo à dépasser ses limites
+    delay(2000); // attente à nouveau
+    digitalWrite(pinMoteur,HIGH); // on passe le pin à +5V
+    delay (1000);
+    digitalWrite(pinMoteur,LOW); // on passe le pin à 0V
+    delay(1000);
+    leServo.write(90); // position à 179, 180 est à éviter car cela forcerait le servo à dépasser ses limites
+    delay(2000); // attente à nouveau
+    digitalWrite(pinMoteur,HIGH); // on passe le pin à +5V
+    delay (1000);
+    digitalWrite(pinMoteur,LOW); // on passe le pin à 0V
+    delay(1000);
+    leServo.write(0); // position à 179, 180 est à éviter car cela forcerait le servo à dépasser ses limites
+    delay(2000); // attente à nouveau
+    digitalWrite(pinMoteur,HIGH); // on passe le pin à +5V
+    delay (1000);
+    digitalWrite(pinMoteur,LOW); // on passe le pin à 0V
+    delay(1000);
+    pinMode(pinLed,OUTPUT); //le pin 13 en mode sortie de courant
+    digitalWrite(pinLed,HIGH); // on passe le pin à +5V
+    delay (500);
+  }
+
+  if (distance>20)
+  {
+   leServo.write(90); // position à 179, 180 est à éviter car cela forcerait le servo à dépasser ses limites
+   delay(5000); // attente à nouveau
+   pinMode(pinLed,OUTPUT); //le pin 13 en mode sortie de courant
+   digitalWrite(pinLed,LOW); // on passe le pin à +5V
+   delay (500);
+  }
+
+  if (distance==0)
+  {
+   leServo.write(90); // position à 179, 180 est à éviter car cela forcerait le servo à dépasser ses limites
+   delay(5000); // attente à nouveau
+   pinMode(pinLed,OUTPUT); //le pin 13 en mode sortie de courant
+   digitalWrite(pinLed,LOW); // on passe le pin à +5V
+   delay (500);
+  }
+
+
+
+
+}
+
+
+//fonction de mesure de distance avec SRF05
+
+int mesureDistance() {
+
+  unsigned long mesure = 0; // variable de mesure
+
+  pinMode (pinSRF, OUTPUT); //on prépare le pin pour envoyer le signal
+
+  digitalWrite(pinSRF, LOW); //on commence à l'état bas
+
+  delayMicroseconds(2); //on attend que le signal soit clair
+
+  digitalWrite(pinSRF, HIGH);//mise à l'état haut
+
+  delayMicroseconds(10); //pendant 10 µs
+
+  digitalWrite(pinSRF, LOW); //mise à l'état bas
+
+  pinMode(pinSRF, INPUT); //on prépare le pin pour recevoir un état
+
+  mesure = pulseIn(pinSRF, HIGH); // fonction pulseIn qui attend un état haut et renvoie le temps d'attente
+
+  mesure=mesure/vSon;//on transforme en cm
+
+  return mesure; //on renvoie la mesure au programme principal
+
+}
